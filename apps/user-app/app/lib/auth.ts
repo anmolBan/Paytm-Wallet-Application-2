@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { userSigninSchema } from "@repo/zod-types/zod-types";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
-// import { Session } from "next-auth";
+import { DefaultSession } from "next-auth";
 
 interface CredentialsType{
     phone: string;
@@ -16,6 +16,22 @@ interface User{
     name: string;
     phone: string;
     email: string;
+}
+
+declare module "next-auth"{
+    interface Session{
+        user: {
+            id: string;
+            phone: string;
+        }  & DefaultSession["user"];
+    }
+}
+
+declare module "next-auth/jwt" {
+    interface JWT {
+        id: string;
+        phone: string;
+    }
 }
 
 export const authOptions = {
@@ -104,7 +120,7 @@ export const authOptions = {
                 session.user.email = token.email;
             }
             // console.log(user);
-            return session
+            return session || {};
         }
     }
   }

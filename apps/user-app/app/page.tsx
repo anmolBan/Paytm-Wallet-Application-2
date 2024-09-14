@@ -1,19 +1,13 @@
-"use client"
+import { getServerSession } from "next-auth";
+import { redirect } from 'next/navigation'
+import { authOptions } from "./lib/auth";
 
-import { balanceAtom } from "@repo/store/atoms";
-import { useRecoilState } from "recoil";
-
-export default function Home() {
-  const [ balance, setBalance ] = useRecoilState(balanceAtom);
-  return (
-    <div>
-      Balance {balance}
-      <button onClick={() => {
-        setBalance(balance + 1)
-      }}>+</button>
-      <button onClick={() => {
-        setBalance(balance - 1)
-      }}>-</button>
-    </div>
-  );
+export default async function Page() {
+  const session = await getServerSession(authOptions);
+  if (session?.user) {
+    console.log("Home");
+    redirect('/dashboard')
+  } else {
+    redirect('/api/auth/signin')
+  }
 }
