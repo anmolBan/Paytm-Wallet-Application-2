@@ -10,7 +10,6 @@ export async function createOnRampTransaction(amount: number, provider: string) 
     if (!session || !session.user) {
         // Redirect to the login page
         redirect('/api/auth/signin'); // Adjust this path to your login page
-        return;
     }
     
     const userId = parseInt(session.user.id);

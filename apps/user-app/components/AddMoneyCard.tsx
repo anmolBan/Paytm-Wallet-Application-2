@@ -35,8 +35,13 @@ export const AddMoney = () => {
             }))} />
             <div className="flex justify-center pt-4">
                 <Button onClick={async () => {
-                    await createOnRampTransaction(amount * 100, provider || "");
-                    window.location.href = redirectUrl || "";
+                    if(amount*100 > 0){
+                        await createOnRampTransaction(amount * 100, provider || "");
+                        window.location.href = redirectUrl || "";
+                    }
+                    else{
+                        alert("Amount should be greater than zero.");
+                    }
                 }}>
                 Add Money
                 </Button>
