@@ -49,6 +49,13 @@ model Balance {
   user   User @relation(fields: [userId], references: [id])
 }
 
+model HDFCBank{
+  id       Int @id @default(autoincrement())
+  userId   Int
+  amount   Int
+  token    String
+}
+
 enum AuthType {
   Google
   Github
