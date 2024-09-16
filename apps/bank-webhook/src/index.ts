@@ -1,12 +1,12 @@
 import express from "express";
-import db from "@repo/db/client"
+import db from "@repo/db/client";
+import 'dotenv/config'; 
 
 const app = express();
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    console.log("You are in HDFC Webhook Sever");
     res.status(200).json({
         message: "Hello World, this is the HDFC Webhook Server."
     });
@@ -15,13 +15,34 @@ app.get("/", (req, res) => {
 app.post("/hdfcwebhook", async (req, res) => {
     const paymentInformation: {
         token: string;
-        userId: string;
-        amount: string
+        userId: number;
+        amount: string;
+        secret: string;
     } = {
         token: req.body.token,
-        userId: req.body.user_identifier,
-        amount: req.body.amount
+        userId: req.body.userId,
+        amount: req.body.amount,
+        secret: req.body.secret
     };
+
+    const ourSecret = (process.env.HDFC_SECRET);
+    if(ourSecret !== paymentInformation.secret){
+        try {
+            await db.onRampTransaction.update({
+                where: {
+                    token: paymentInformation.token
+                },
+                data: {
+                    status: "Failure"
+                }
+            });
+        } catch (updateError) {
+            console.error("Error updating transaction status to Failure:", updateError);
+        }
+        return res.status(401).json({
+            message: "You aren't authorized."
+        });
+    }
 
     try{
         await db.$transaction([
@@ -62,4 +83,6 @@ app.post("/hdfcwebhook", async (req, res) => {
     }
 });
 
-app.listen(3003);
+app.listen(3005, () =>{
+    console.log("Bank web-hook server is running.");
+});

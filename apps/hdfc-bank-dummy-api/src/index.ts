@@ -2,6 +2,7 @@ import express from "express";
 import { hdfcBankDummyApiSchema, hdfcNetBankingSchema } from "@repo/zod-types/zod-types";
 import db from "@repo/db/client";
 import cors from "cors"
+import axios from "axios";
 
 const app = express();
 
@@ -31,7 +32,8 @@ app.post("/getbankapi", async (req, res) => {
                 data: {
                     userId: Number(req.body.userId),
                     amount: Number(req.body.amount),
-                    token: token
+                    token: token,
+                    status: "Processing"
                 }
             }),
 
@@ -54,18 +56,75 @@ app.post("/net-banking", async (req, res) => {
     const body = req.body;
     const parsedBody = hdfcNetBankingSchema.safeParse(body);
 
-    if(!parsedBody.success){
+    if (!parsedBody.success) {
         return res.status(400).json({
             message: "Invalid Inputs"
         });
     }
 
-    try{
+    try {
+        const transaction = await db.hDFCBank.findFirst({
+            where: {
+                token: body.token
+            }
+        });
 
-    } catch(error){
-        
+        if (!transaction) {
+            console.log("No transactions");
+            return res.status(401).json({
+                message: "Invalid transaction"
+            });
+        }
+
+        // Handle the axios call and error properly
+        try {
+            await axios.post("http://localhost:3005/hdfcwebhook", {
+                userId: transaction.userId,
+                secret: "my_hdfc_secret",
+                token: body.token,
+                amount: body.amount
+            });
+
+            // Update the transaction status to success if the axios request succeeds
+            await db.$transaction(async (prisma) => {
+                await prisma.hDFCBank.update({
+                    where: {
+                        id: transaction.id
+                    },
+                    data: {
+                        status: "Success"
+                    }
+                });
+            });
+
+            return res.status(200).json({
+                message: "Success"
+            });
+
+        } catch (error) {
+            // Log the axios error and respond with a failure message
+            console.error("Axios request failed:", error);
+            // Optionally, you can update the transaction status to "Failed" here
+            await db.hDFCBank.update({
+                where: {
+                    id: transaction.id
+                },
+                data: {
+                    status: "Failure"
+                }
+            });
+            return res.status(500).json({
+                message: "Transaction failed due to external API error"
+            });
+        }
+
+    } catch (error) {
+        console.error("Internal server error:", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
     }
-})
+});
 
 app.listen(3004, () => {
     console.log("Bank sever is running on port: 3004");

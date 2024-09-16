@@ -119,7 +119,6 @@ export const authOptions = {
                 session.user.name = token.name;
                 session.user.email = token.email;
             }
-            // console.log(user);
             return session || {};
         }
     }

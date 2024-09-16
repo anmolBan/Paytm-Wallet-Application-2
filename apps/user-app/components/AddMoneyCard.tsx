@@ -7,6 +7,7 @@ import { createOnRampTransaction } from "../app/lib/actions/createOnRampTxn";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { authOptions } from "../app/lib/auth";
+import { useRouter } from "next/navigation";
 
 const SUPPORTED_BANKS = [{
     name: "HDFC Bank",
@@ -21,6 +22,7 @@ export const AddMoney = () => {
     const [ amount, setAmount ] = useState(0);
     const [ provider, setProvider ] = useState(SUPPORTED_BANKS[0]?.name);
     const session = useSession();
+    const router = useRouter();
     
     return (
         <div className="w-full">
@@ -40,7 +42,6 @@ export const AddMoney = () => {
             <div className="flex justify-center pt-4">
                 <Button onClick={async () => {
                     if(amount*100 > 0){
-                        // await createOnRampTransaction(amount * 100, provider || "");
                         // window.location.href = redirectUrl || "";
                         if(redirectUrl){
                             const res = await axios.post(redirectUrl, {
@@ -48,9 +49,13 @@ export const AddMoney = () => {
                                 amount: amount * 100
                             });
                             if(res.status === 200){
+                                await createOnRampTransaction(amount * 100, provider || "", res.data.token);
                                 const res2 = await axios.post(res.data.url, {
+                                    token: res.data.token,
+                                    amount: amount * 100,
                                 });
                             }
+                            router.refresh();
                         }
                     }
                     else{

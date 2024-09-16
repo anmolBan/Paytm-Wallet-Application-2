@@ -4,7 +4,7 @@ import { authOptions } from "../auth";
 import { redirect } from 'next/navigation'; // Adjust based on your Next.js version
 import prisma from "@repo/db/client";
 
-export async function createOnRampTransaction(amount: number, provider: string) {
+export async function createOnRampTransaction(amount: number, provider: string, token: string) {
     const session = await getServerSession(authOptions);
     
     if (!session || !session.user) {
@@ -13,21 +13,29 @@ export async function createOnRampTransaction(amount: number, provider: string) 
     }
     
     const userId = parseInt(session.user.id);
-    const token = Math.random().toString();
-    await prisma.onRampTransaction.create({
-        data: {
-            userId,
-            amount: amount,
-            status: "Processing",
-            startTime: new Date(),
-            provider,
-            token: token
+    // const token = Math.random().toString();
+    try{
+        await prisma.onRampTransaction.create({
+            data: {
+                userId,
+                amount: amount,
+                status: "Processing",
+                startTime: new Date(),
+                provider,
+                token: token
+            }
+        });
+        return {
+            message: "On ramp transaction added"
         }
-    });
-
-    return {
-        message: "On ramp transaction added"
+    } catch(error){
+        console.error(error);
+        throw new Error("There is an error");
+        // return {
+        //     error
+        // }
     }
+
 
     alert("Transaction created");
     return;

@@ -54,6 +54,7 @@ model HDFCBank{
   userId   Int
   amount   Int
   token    String
+  status   OnRampStatus
 }
 
 enum AuthType {
