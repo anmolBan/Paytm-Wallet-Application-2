@@ -20,3 +20,10 @@ export const hdfcNetBankingSchema = zod.object({
 });
 
 export type HdfcNetBankingSchema = zod.infer<typeof hdfcNetBankingSchema>;
+
+export const hdfcBankWebhookSchema = zod.object({
+    token: zod.string(),
+    userId: zod.number(),
+    amount: zod.number(),
+    secret: zod.string()
+});

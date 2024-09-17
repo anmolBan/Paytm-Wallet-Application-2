@@ -51,7 +51,7 @@ export const AddMoney = () => {
                             if(res.status === 200){
                                 await createOnRampTransaction(amount * 100, provider || "", res.data.token);
                                 const res2 = await axios.post(res.data.url, {
-                                    token: res.data.token,
+                                    token: "0.40850367208266647",//res.data.token,
                                     amount: amount * 100,
                                 });
                             }

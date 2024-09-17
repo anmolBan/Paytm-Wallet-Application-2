@@ -53,7 +53,7 @@ model HDFCBank{
   id       Int @id @default(autoincrement())
   userId   Int
   amount   Int
-  token    String
+  token    String @unique
   status   OnRampStatus
 }
 

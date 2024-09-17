@@ -55,8 +55,10 @@ app.post("/getbankapi", async (req, res) => {
 app.post("/net-banking", async (req, res) => {
     const body = req.body;
     const parsedBody = hdfcNetBankingSchema.safeParse(body);
+    // console.log(parsedBody.error, "anmol");
 
     if (!parsedBody.success) {
+        // console.log(parsedBody.error);
         return res.status(400).json({
             message: "Invalid Inputs"
         });
