@@ -1,21 +1,39 @@
 // import { SidebarItem } from "../../components/SidebarItem";
+"use client"
+import { useRouter } from "next/navigation";
+import { AppbarClient } from "../../components/AppbarClient";
 import { SidebarItem } from "../../components/SidebarItem";
+import { useSession } from "next-auth/react";
 
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode;}): JSX.Element {
+  const session = useSession();
+  const router = useRouter();
+
+  if(session.status === "loading"){
+    return (
+      <div>
+        Loading...
+      </div>
+    )
+  }
+
+  if(session.status === "unauthenticated"){
+    router.push("/api/auth/signin");
+  }
+
   return (
-    <div className="flex">
-        <div className="w-72 border-r border-slate-300 min-h-screen mr-4 pt-28">
-            <div>
-                <SidebarItem href={"/dashboard"} icon={<HomeIcon />} title="Home" />
-                <SidebarItem href={"/transfer"} icon={<TransferIcon />} title="Transfer" />
-                <SidebarItem href={"/transactions"} icon={<TransactionsIcon />} title="Transactions" />
-            </div>
-        </div>
-            {children}
+    <div>
+      <AppbarClient/>
+      <div className="flex">
+          <div className="w-72 border-r border-slate-300 min-h-screen mr-4 pt-28">
+              <div>
+                  <SidebarItem href={"/dashboard"} icon={<HomeIcon />} title="Home" />
+                  <SidebarItem href={"/transfer"} icon={<TransferIcon />} title="Transfer" />
+                  <SidebarItem href={"/transactions"} icon={<TransactionsIcon />} title="Transactions" />
+              </div>
+          </div>
+              {children}
+      </div>
     </div>
   );
 }
