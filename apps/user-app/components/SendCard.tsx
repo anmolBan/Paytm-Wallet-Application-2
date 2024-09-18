@@ -22,7 +22,7 @@ export function SendCard() {
                     }} />
                     <div className="pt-4 flex justify-center">
                         <Button onClick={async () => {
-                            await handleP2PTransaction(number, amount);
+                            await handleP2PTransaction(number, amount * 100);
                         }}>Send</Button>
                     </div>
                 </div>
