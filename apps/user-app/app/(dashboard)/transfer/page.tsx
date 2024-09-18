@@ -5,9 +5,15 @@ import { time } from "console";
 import { AddMoney } from "../../../components/AddMoneyCard";
 import { BalanceCard } from "../../../components/BalanceCard";
 import { OnRampTransactions } from "../../../components/OnRampTransactions";
+import { redirect } from 'next/navigation';
 
 async function getBalance(){
     const session = await getServerSession(authOptions);
+    
+    if(!session?.user){
+        redirect("/api/auth/signin");
+    }
+
     const balance = await prisma.balance.findFirst({
         where: {
             userId: Number(session?.user.id)

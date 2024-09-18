@@ -6,7 +6,6 @@ import { Button } from "@repo/ui/button";
 import { createOnRampTransaction } from "../app/lib/actions/createOnRampTxn";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { authOptions } from "../app/lib/auth";
 import { useRouter } from "next/navigation";
 
 const SUPPORTED_BANKS = [{
@@ -16,6 +15,8 @@ const SUPPORTED_BANKS = [{
     name: "Axis Bank",
     redirectUrl: "https://www.axisbank.com"
 }];
+
+let index = 1;
 
 export const AddMoney = () => {
     const [ redirectUrl, setRedirectUrl ] = useState(SUPPORTED_BANKS[0]?.redirectUrl);
