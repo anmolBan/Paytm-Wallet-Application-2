@@ -81,10 +81,26 @@ export const authOptions = {
                     
                     const hashedPassword = await bcrypt.hash(credentials.password, 10);
 
+                    // const newUser = await db.user.create({
+                    //     data:{
+                    //         phone: credentials.phone,
+                    //         password: hashedPassword
+                    //     }
+                    // });
+
+                    
                     const newUser = await db.user.create({
-                        data:{
+                        data: {
                             phone: credentials.phone,
                             password: hashedPassword
+                        }
+                    });
+                    
+                    await db.balance.create({
+                        data: {
+                            userId: newUser.id,
+                            amount: 0,
+                            locked: 0
                         }
                     });
 
