@@ -4,12 +4,24 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "../auth"
 import { redirect } from "next/navigation";
 import prisma from "@repo/db/client";
+import { handleP2PTransactionSchema } from "@repo/zod-types/zod-types";
 
 export async function handleP2PTransaction(recipientNumber: string, amount: number){
     const session = await getServerSession(authOptions);
 
     if(!session || !session.user){
         redirect("/api/auth/signin");
+    }
+
+    const parsedData = handleP2PTransactionSchema.safeParse({
+        recipientNumber,
+        amount
+    });
+
+    if(!parsedData.success){
+        return{
+            message: "Invalid inputs."
+        };
     }
 
     const senderId = parseInt(session.user.id);
@@ -22,12 +34,11 @@ export async function handleP2PTransaction(recipientNumber: string, amount: numb
         });
 
         if(!reciever){
-            return {
-                message: "User not found"
-            }
+            throw new Error("Invalid inputs.");
         }
 
         await prisma.$transaction(async(tx) => {
+            await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(senderId)} FOR UPDATE`;
             const senderBalance = await tx.balance.findUnique({
                 where: {
                     userId: Number(senderId)
@@ -48,7 +59,7 @@ export async function handleP2PTransaction(recipientNumber: string, amount: numb
                 },
                 data: {
                     amount: {
-                        decrement: amount
+                        decrement: Number(amount)
                     }
                 }
             });
@@ -59,7 +70,7 @@ export async function handleP2PTransaction(recipientNumber: string, amount: numb
                 },
                 data: {
                     amount: {
-                        increment: amount
+                        increment: Number(amount)
                     }
                 }
             });

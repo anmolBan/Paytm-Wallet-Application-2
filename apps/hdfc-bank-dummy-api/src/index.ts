@@ -3,6 +3,7 @@ import { hdfcBankDummyApiSchema, hdfcNetBankingSchema } from "@repo/zod-types/zo
 import db from "@repo/db/client";
 import cors from "cors"
 import axios from "axios";
+import 'dotenv/config'; 
 
 const app = express();
 
@@ -78,11 +79,12 @@ app.post("/net-banking", async (req, res) => {
             });
         }
 
+        const secret = process.env.SECRET;
         // Handle the axios call and error properly
         try {
             await axios.post("http://localhost:3005/hdfcwebhook", {
                 userId: transaction.userId,
-                secret: "my_hdfc_secret",
+                secret: secret,
                 token: body.token,
                 amount: body.amount
             });

@@ -27,3 +27,14 @@ export const hdfcBankWebhookSchema = zod.object({
     amount: zod.number(),
     secret: zod.string()
 });
+
+export const createOnRampTransactionSchema = zod.object({
+    amount: zod.number(),
+    provider: zod.string(),
+    token: zod.string()
+});
+
+export const handleP2PTransactionSchema = zod.object({
+    recipientNumber: zod.string(),
+    amount: zod.number()
+});
