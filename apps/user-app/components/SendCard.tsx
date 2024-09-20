@@ -5,12 +5,13 @@ import { Center } from "@repo/ui/center";
 import { TextInput } from "@repo/ui/textinput";
 import { useState } from "react";
 import { handleP2PTransaction } from "../app/lib/actions/handleP2PTxn";
+import { useRouter } from "next/navigation";
 
 export function SendCard() {
     const [number, setNumber] = useState("");
     const [amount, setAmount] = useState(0);
-
-    return <div className="h-[90vh]">
+    const router = useRouter();
+    return <div>
         <Center>
             <Card title="Send">
                 <div className="min-w-72 pt-2">
@@ -23,6 +24,7 @@ export function SendCard() {
                     <div className="pt-4 flex justify-center">
                         <Button onClick={async () => {
                             await handleP2PTransaction(number, amount * 100);
+                            router.refresh();
                         }}>Send</Button>
                     </div>
                 </div>

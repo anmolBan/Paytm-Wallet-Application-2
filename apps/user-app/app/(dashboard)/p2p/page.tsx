@@ -17,22 +17,23 @@ export default async function(){
     const transactions = await getP2PTransactions();
 
     return (
-        <div className="w-screen">
+        <div className="w-screen h-screen">
             <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
                 Transfer
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
-                <div>
+            <div className="flex justify-center gap-10 h-5/6 w-full">
+                <div className="flex flex-col w-1/2 justify-center">
                     <SendCard/>
                 </div>
-                <div>
-                    <div className="pt-4">
+                <div className="flex flex-col w-1/2 justify-center mr-28">
+                    <div>
                         <P2PTansactions transactions={transactions} />
                     </div>
                 </div>
             </div>
         </div>
     )
+    
 }
 
 async function getP2PTransactions(){
