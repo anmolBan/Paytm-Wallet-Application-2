@@ -5,6 +5,7 @@ import { authOptions } from "../auth"
 import { redirect } from "next/navigation";
 import prisma from "@repo/db/client";
 import { handleP2PTransactionSchema } from "@repo/zod-types/zod-types";
+import { string } from "zod";
 
 export async function handleP2PTransaction(recipientNumber: string, amount: number){
     const session = await getServerSession(authOptions);
@@ -39,17 +40,17 @@ export async function handleP2PTransaction(recipientNumber: string, amount: numb
 
         await prisma.$transaction(async(tx) => {
             await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(senderId)} FOR UPDATE`;
-            const senderBalance = await tx.balance.findUnique({
+            const sender = await tx.balance.findUnique({
                 where: {
                     userId: Number(senderId)
                 }
             });
 
-            if(!senderBalance){
+            if(!sender){
                 throw new Error("Internal server error");
             }
 
-            if(senderBalance.amount < amount){
+            if(sender.amount < amount){
                 throw new Error("Insufficient funds");
             }
 
@@ -72,6 +73,18 @@ export async function handleP2PTransaction(recipientNumber: string, amount: numb
                     amount: {
                         increment: Number(amount)
                     }
+                }
+            });
+
+            await tx.p2pTransfer.create({
+                data: {
+                    amount: amount,
+                    timestamp: new Date,
+                    fromUserId: Number(senderId),
+                    toUserId: Number(reciever.id),
+                    status: "Success",
+                    toPhone: String(recipientNumber),
+                    fromPhone: String(session.user.phone)
                 }
             });
         });
