@@ -3,35 +3,13 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
 import { userSigninSchema } from "@repo/zod-types/zod-types";
 import { JWT } from "next-auth/jwt";
-import { Session } from "next-auth";
-import { DefaultSession } from "next-auth";
+import { Session, User } from "next-auth";
+// import { AdapterUser } from "next-auth/adapters";
+// import { AdapterUser } from "next-auth/adapters";
 
 interface CredentialsType{
     phone: string;
     password: string
-}
-
-interface User{
-    id: string;
-    name: string;
-    phone: string;
-    email: string;
-}
-
-declare module "next-auth"{
-    interface Session{
-        user: {
-            id: string;
-            phone: string;
-        }  & DefaultSession["user"];
-    }
-}
-
-declare module "next-auth/jwt" {
-    interface JWT {
-        id: string;
-        phone: string;
-    }
 }
 
 export const authOptions = {
@@ -119,7 +97,7 @@ export const authOptions = {
     ],
     secret: process.env.JWT_SECRET || "secret",
     callbacks: {
-        async jwt({ token, user }: {token: JWT, user: User}){
+        async jwt({ token, user }: { token: JWT, user: User}){
             if(user){
                 token.id = user.id,
                 token.phone = user.phone,
