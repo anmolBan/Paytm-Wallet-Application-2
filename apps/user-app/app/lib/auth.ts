@@ -4,8 +4,6 @@ import bcrypt from "bcrypt";
 import { userSigninSchema } from "@repo/zod-types/zod-types";
 import { JWT } from "next-auth/jwt";
 import { Session, User } from "next-auth";
-// import { AdapterUser } from "next-auth/adapters";
-// import { AdapterUser } from "next-auth/adapters";
 
 interface CredentialsType{
     phone: string;
@@ -58,14 +56,6 @@ export const authOptions = {
                     }
                     
                     const hashedPassword = await bcrypt.hash(credentials.password, 10);
-
-                    // const newUser = await db.user.create({
-                    //     data:{
-                    //         phone: credentials.phone,
-                    //         password: hashedPassword
-                    //     }
-                    // });
-
                     
                     const newUser = await db.user.create({
                         data: {
