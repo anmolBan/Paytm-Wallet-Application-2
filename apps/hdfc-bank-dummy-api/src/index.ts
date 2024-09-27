@@ -56,10 +56,8 @@ app.post("/getbankapi", async (req, res) => {
 app.post("/net-banking", async (req, res) => {
     const body = req.body;
     const parsedBody = hdfcNetBankingSchema.safeParse(body);
-    // console.log(parsedBody.error, "anmol");
 
     if (!parsedBody.success) {
-        // console.log(parsedBody.error);
         return res.status(400).json({
             message: "Invalid Inputs"
         });
@@ -81,8 +79,9 @@ app.post("/net-banking", async (req, res) => {
 
         const secret = process.env.SECRET;
         // Handle the axios call and error properly
+        const containerNameOrLocal = process.env.CONTAINER_NAME || 'localhost'
         try {
-            await axios.post("http://localhost:3005/hdfcwebhook", {
+            await axios.post(`http://${containerNameOrLocal}:3005/hdfcwebhook`, {
                 userId: transaction.userId,
                 secret: secret,
                 token: body.token,

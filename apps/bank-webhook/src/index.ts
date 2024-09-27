@@ -2,9 +2,11 @@ import express from "express";
 import db from "@repo/db/client";
 import 'dotenv/config'; 
 import { hdfcBankWebhookSchema } from "@repo/zod-types/zod-types";
+import cors from "cors";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -52,7 +54,6 @@ app.post("/hdfcwebhook", async (req, res) => {
         }
 
         if(transaction?.status === "Failure" || transaction?.status === "Success"){
-            // console.log("Bhaiyya chutiya samjhe ho kya?");
             console.log("Someone is trying to re-attempt the already completed transaction.")
             return res.status(403).json({
                 message: "Invalid request OR Request already completed."
