@@ -51,20 +51,20 @@ export const P2PTansactions = async ({ transactions }: {
     )
 }
 
-async function getRecieverDetails(recieverId: number){
-    try{
-        const reciever = prisma.user.findUnique({
-            where: {
-                id: Number(recieverId)
-            },
-            select: {
-                name: true,
-                phone: true
-            }
-        });
-        return reciever;
-    } catch(error){
-        console.error(error);
-        return {}
-    }
-}
+// async function getRecieverDetails(recieverId: number){
+//     try{
+//         const reciever = prisma.user.findUnique({
+//             where: {
+//                 id: Number(recieverId)
+//             },
+//             select: {
+//                 name: true,
+//                 phone: true
+//             }
+//         });
+//         return reciever;
+//     } catch(error){
+//         console.error(error);
+//         return {}
+//     }
+// }

@@ -39,19 +39,24 @@ export default async function(){
 async function getP2PTransactions(){
     const session = await getServerSession(authOptions);
     try{
-        const p2pTransactionsSent = await prisma.p2pTransfer.findMany({
+        const p2pTransactions = await prisma.p2pTransfer.findMany({
             where: {
-                fromUserId: Number(session?.user.id)
+                OR: [
+                    { fromUserId: Number(session?.user.id) },  // Condition 1: Sent by the user
+                    { toUserId: Number(session?.user.id) }     // Condition 2: Received by the user
+                ]
             }
         });
 
-        const p2pTransactionsRecieved = await prisma.p2pTransfer.findMany({
-            where: {
-                toUserId: Number(session?.user.id)
-            }
-        });
+        console.log(p2pTransactions.length);
 
-        const sentTransactions =  p2pTransactionsSent.map( (t) => ({
+        // const p2pTransactionsRecieved = await prisma.p2pTransfer.findMany({
+        //     where: {
+        //         toUserId: Number(session?.user.id)
+        //     }
+        // });
+
+        const allTransactions =  p2pTransactions.map( (t) => ({
             amount: t.amount,
             from: t.fromUserId,
             to: t.toUserId,
@@ -59,17 +64,6 @@ async function getP2PTransactions(){
             status: t.status,
             phone: t.toPhone
         }));
-
-        const recievedTransactions = p2pTransactionsRecieved.map((t) => ({
-            amount: t.amount,
-            from: t.fromUserId,
-            to: t.toUserId,
-            time: t.timestamp,
-            status: t.status,
-            phone: t.fromPhone
-        }));
-
-        const allTransactions = [...sentTransactions, ...recievedTransactions];
 
         return allTransactions;
 
