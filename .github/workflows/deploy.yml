@@ -24,7 +24,29 @@ jobs:
         context: .
         file: ./apps/user-app/Dockerfile
         push: true
-        tags: anmolban/first-container-web-app  # Replace with your Docker Hub username and repository
+        tags: anmolban/user-app  # Replace with your Docker Hub username and repository
+
+    - name: Build and Push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./apps/bank-webhook/Dockerfile
+        push: true
+        tags: anmolban/bank-webhook
+    
+    - name: Build and Push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./apps/hdfc-bank-dummy-api/Dockerfile
+        push: true
+        tags: anmolban/hdfc-bank-dummy-api
 
     - name: Verify Pushed Image
-      run: docker pull anmolban/first-container-web-app  # Replace with your Docker Hub username and repository
+      run: docker pull anmolban/user-app  # Replace with your Docker Hub username and repository
+
+    - name: Verify Pushed Image
+      run: docker pull anmolban/bank-webhook
+    
+    - name: Verify Pushed Image
+      run: docker pull anmolban/hdfc-bank-dummy-api
