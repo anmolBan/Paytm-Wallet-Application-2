@@ -22,9 +22,9 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./apps/user-app
-        file: ./Dockerfile
+        file: Dockerfile
         push: true
-        tags: anmolban/first-container-web-app  # Replace with your Docker Hub username and repository
+        tags: anmolban/first-container-web-app:latest  # Replace with your Docker Hub username and repository
 
     - name: Verify Pushed Image
-      run: docker pull anmolban/first-container-web-appt  # Replace with your Docker Hub username and repository
+      run: docker pull anmolban/first-container-web-appt:latest  # Replace with your Docker Hub username and repository
