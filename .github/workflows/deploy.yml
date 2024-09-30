@@ -24,7 +24,7 @@ jobs:
         context: .
         file: ./apps/user-app/Dockerfile
         push: true
-        tags: anmolban/first-container-web-app:latest  # Replace with your Docker Hub username and repository
+        tags: anmolban/first-container-web-app  # Replace with your Docker Hub username and repository
 
     - name: Verify Pushed Image
-      run: docker pull anmolban/first-container-web-appt:latest  # Replace with your Docker Hub username and repository
+      run: docker pull anmolban/first-container-web-appt  # Replace with your Docker Hub username and repository
