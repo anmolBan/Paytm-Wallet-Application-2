@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 const SUPPORTED_BANKS = [{
     name: "HDFC Bank",
-    redirectUrl: "http://localhost:3004/getbankapi"
+    redirectUrl: "http://ec2-3-109-185-50.ap-south-1.compute.amazonaws.com:3004/getbankapi"
 }, {
     name: "Axis Bank",
     redirectUrl: "https://www.axisbank.com"
