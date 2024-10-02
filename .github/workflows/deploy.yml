@@ -50,3 +50,26 @@ jobs:
     
     - name: Verify Pushed Image
       run: docker pull anmolban/hdfc-bank-dummy-api
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with: 
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          sudo docker pull anmolban/user-app:latest
+          sudo docker stop user-app || true
+          sudo docker rm user-app || true
+          sudo docker run -d --name user-app -p 3005:3000 anmolban/user-app:latest
+          
+          sudo docker pull anmolban/hdfc-bank-dummy-api:latest
+          sudo docker stop hdfc-bank-dummy-api || true
+          sudo docker rm hdfc-bank-dummy-api || true
+          sudo docker run -d --name hdfc-bank-dummy-api -p 3004:3004 anmolban/hdfc-bank-dummy-api:latest
+
+          sudo docker pull anmolban/bank-webhook:latest
+          sudo docker stop bank-webhook || true
+          sudo docker rm bank-webhook || true
+          sudo docker run -d --name bank-webhook -p 3005:3005 anmolban/bank-webhook:latest
+
