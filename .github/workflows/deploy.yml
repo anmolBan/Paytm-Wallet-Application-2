@@ -71,5 +71,5 @@ jobs:
           sudo docker pull anmolban/bank-webhook:latest
           sudo docker stop bank-webhook || true
           sudo docker rm bank-webhook || true
-          sudo docker run -d -e DATABASE_URL=${{secrets.DATABASE_URL}} -e HDFC_SECRET=${{HDFC_SECRET}} --name bank-webhook-container -p 3005:3005 anmolban/bank-webhook:latest
+          sudo docker run -d -e DATABASE_URL=${{secrets.DATABASE_URL}} -e HDFC_SECRET=${{secrets.HDFC_SECRET}} --name bank-webhook-container -p 3005:3005 anmolban/bank-webhook:latest
 
