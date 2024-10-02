@@ -39,9 +39,9 @@ app.post("/getbankapi", async (req, res) => {
             }),
 
         ]);
-
+        
         res.status(200).json({
-            url: "http://localhost:3004/net-banking",
+            url: "http://ec2-3-109-185-50.ap-south-1.compute.amazonaws.com:3004/net-banking",
             token: token
         });
     } catch(error){
