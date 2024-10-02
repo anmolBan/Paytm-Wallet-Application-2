@@ -57,26 +57,30 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SECRET: ${{ secrets.SECRET }}
-          HDFC_SECRET: ${{ secrets.HDFC_SECRET }}
-          CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
         script: |
           sudo docker stop user-app || true
           sudo docker rm user-app || true
           sudo docker pull anmolban/user-app:latest
-          sudo docker run -d -e DATABASE_URL="$DATABASE_URL" -e NEXTAUTH_URL="$NEXTAUTH_URL" -e JWT_SECRET="$JWT_SECRET" --name user-app -p 3005:3000 anmolban/user-app:latest
+          sudo docker run -d \
+            -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            -e NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}" \
+            -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            --name user-app -p 3005:3000 anmolban/user-app:latest
           
           sudo docker stop hdfc-bank-dummy-api || true
           sudo docker rm hdfc-bank-dummy-api || true
           sudo docker pull anmolban/hdfc-bank-dummy-api:latest
-          sudo docker run -d -e SECRET="$SECRET" -e DATABASE_URL="$DATABASE_URL" -e CONTAINER_NAME="$CONTAINER_NAME" --name hdfc-bank-dummy-api -p 3004:3004 anmolban/hdfc-bank-dummy-api:latest
+          sudo docker run -d \
+            -e SECRET="${{ secrets.SECRET }}" \
+            -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            -e CONTAINER_NAME="${{ secrets.CONTAINER_NAME }}" \
+            --name hdfc-bank-dummy-api -p 3004:3004 anmolban/hdfc-bank-dummy-api:latest
 
           sudo docker stop bank-webhook || true
           sudo docker rm bank-webhook || true
           sudo docker pull anmolban/bank-webhook:latest
-          sudo docker run -d -e DATABASE_URL="$DATABASE_URL" -e HDFC_SECRET="$HDFC_SECRET" --name bank-webhook-container -p 3005:3005 anmolban/bank-webhook:latest
+          sudo docker run -d \
+            -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            -e HDFC_SECRET="${{ secrets.HDFC_SECRET }}" \
+            --name bank-webhook-container -p 3005:3005 anmolban/bank-webhook:latest
 
