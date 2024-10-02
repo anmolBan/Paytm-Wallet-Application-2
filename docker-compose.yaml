@@ -1,23 +1,29 @@
 version: '3.8'
 services:
   bank-webhook:
-    image: bank-webhook-image
+    image: anmolban/bank-webhook
     container_name: bank-webhook-container
     ports:
       - "3005:3005"
+    env_file:
+      - ./apps/bank-webhook
+      - ./packages/db
 
   hdfcDummyApi:
-    image: hdfc-dummy-api-image
+    image: anmolban/hdfc-bank-dummy-api
     container_name: hdfc-dummy-api-container
     ports:
       - "3004:3004"
     environment:
       - CONTAINER_NAME=bank-webhook-container
-    depends_on:
-      - bank-webhook
+    env_file:
+      - ./apps/hdfc-bank-dummy-api
+      - ./packages/db
   
   user-app:
-    image: user-app-image
+    image: anmolban/user-app
     container_name: user-app-container
     ports:
-      - "3001:3000"
+      - "3000:3000"
+    env_file:
+      - ./packages/db
