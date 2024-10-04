@@ -65,7 +65,7 @@ jobs:
             -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             -e NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}" \
             -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-            --name user-app -p 3005:3000 anmolban/user-app:latest
+            --name user-app -p 3000:3000 anmolban/user-app:latest
           
           sudo docker stop hdfc-bank-dummy-api || true
           sudo docker rm hdfc-bank-dummy-api || true
