@@ -43,7 +43,6 @@ export const AddMoney = () => {
             <div className="flex justify-center pt-4">
                 <Button onClick={async () => {
                     if(amount*100 > 0){
-                        // window.location.href = redirectUrl || "";
                         if(redirectUrl){
                             const res = await axios.post(redirectUrl, {
                                 userId: session.data?.user.id,
