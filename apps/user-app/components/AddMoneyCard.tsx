@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 const SUPPORTED_BANKS = [{
     name: "HDFC Bank",
-    redirectUrl: `${process.env.HDFC_URL}/getbankapi`
+    redirectUrl: `${process.env.NEXT_PUBLIC_HDFC_URL}/getbankapi`
 }, {
     name: "Axis Bank",
     redirectUrl: "https://www.axisbank.com"
