@@ -62,7 +62,7 @@ jobs:
           sudo docker kill hdfc-bank-dummy-api || true
           sudo docker kill bank-webhook-container || true
 
-          sudo docker system prune --volumes -a || true
+          sudo docker system prune --volumes -a --force || true
 
           sudo docker pull anmolban/user-app:latest
           sudo docker run -d \
