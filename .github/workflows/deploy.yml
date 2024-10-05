@@ -58,9 +58,9 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          sudo docker stop user-app || true
-          sudo docker stop hdfc-bank-dummy-api || true
-          sudo docker stop bank-webhook-container || true
+          sudo docker kill user-app || true
+          sudo docker kill hdfc-bank-dummy-api || true
+          sudo docker kill bank-webhook-container || true
 
           sudo docker system prune --volumes -a || true
 
