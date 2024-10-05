@@ -39,9 +39,8 @@ app.post("/getbankapi", async (req, res) => {
             }),
 
         ]);
-        
         res.status(200).json({
-            url: "http://ec2-3-109-185-50.ap-south-1.compute.amazonaws.com:3004/net-banking",
+            url: `${process.env.HDFC_URL}/net-banking`,
             token: token
         });
     } catch(error){
@@ -79,9 +78,9 @@ app.post("/net-banking", async (req, res) => {
 
         const secret = process.env.SECRET;
         // Handle the axios call and error properly
-        const containerNameOrLocal = process.env.CONTAINER_NAME || 'localhost'
+        const url = process.env.WEBHOOK_URL || 'localhost'
         try {
-            await axios.post(`http://${containerNameOrLocal}:3005/hdfcwebhook`, {
+            await axios.post(`${url}/hdfcwebhook`, {
                 userId: transaction.userId,
                 secret: secret,
                 token: body.token,
