@@ -31,7 +31,11 @@ async function getOnRampTransactions(){
     const txns = await prisma.onRampTransaction.findMany({
         where: {
             userId: Number(session?.user.id)
-        }
+        },
+        orderBy: {
+            startTime: 'desc' // Order by startTime in descending order to get the latest transactions
+        },
+        take: 10 // Limit the result to 10 transactions
     });
     return txns.map(t => ({
         time: t.startTime,

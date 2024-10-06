@@ -45,7 +45,11 @@ async function getP2PTransactions(){
                     { fromUserId: Number(session?.user.id) },  // Condition 1: Sent by the user
                     { toUserId: Number(session?.user.id) }     // Condition 2: Received by the user
                 ]
-            }
+            },
+            orderBy: {
+                timestamp: 'desc' // Order by startTime in descending order to get the latest transactions
+            },
+            take: 10 // Limit the result to 10 transactions
         });
 
         console.log(p2pTransactions.length);
