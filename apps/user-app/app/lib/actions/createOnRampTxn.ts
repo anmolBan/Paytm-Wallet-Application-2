@@ -42,8 +42,4 @@ export async function createOnRampTransaction(amount: number, provider: string, 
         console.error(error);
         throw new Error("There is an error");
     }
-
-
-    alert("Transaction created");
-    return;
 }
