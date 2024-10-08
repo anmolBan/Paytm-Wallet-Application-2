@@ -12,12 +12,23 @@ export async function handleSignup({name, email, phone, password} : {
     const parsedData = handleSignupSchema.safeParse({name, email, phone, password});
 
     if(!parsedData.success){
-        return new Error("Invalid inputs.");
+        return { success: false, error: parsedData.error.flatten() };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try{
+        const user = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { email: email },      // condition 1: find by email
+                    { phone: phone } // condition 2: find by username (for example)
+                ]
+            }
+        });
+        if(user){
+            return { success: false, error: "Email or phone already exists." };
+        }
         await prisma.user.create({
             data: {
                 name,
@@ -26,8 +37,12 @@ export async function handleSignup({name, email, phone, password} : {
                 password: hashedPassword
             }
         });
-    } catch(error){
-        console.error(error);
-        return error;
+        return { success: true, message: "User created successfully." };
+    } catch(error: any){
+        console.error("Server error:", error);
+        return {
+            success: false,
+            error: error.message || "An unexpected error occurred.",
+          };
     }
 }
