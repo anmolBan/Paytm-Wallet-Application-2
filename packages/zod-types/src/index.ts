@@ -38,3 +38,10 @@ export const handleP2PTransactionSchema = zod.object({
     recipientNumber: zod.string(),
     amount: zod.number()
 });
+
+export const handleSignupSchema = zod.object({
+    name: zod.string(),
+    email: zod.string(),
+    phone: zod.string(),
+    password: zod.string()
+});
