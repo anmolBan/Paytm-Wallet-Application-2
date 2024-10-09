@@ -29,7 +29,7 @@ export default function(){
         }
     }
     return (
-        <div className="bg-slate-300 h-screen flex justify-center">
+        <div className="bg-slate-300 h-screen flex flex-col justify-center items-center">
             {error && (
                 <div className="bg-red-500 w-80 py-7 text-white rounded-lg text-center overflow-auto px-2">
                     <div>

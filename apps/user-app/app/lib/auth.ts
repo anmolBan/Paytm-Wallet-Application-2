@@ -15,8 +15,8 @@ export const authOptions = {
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-                phone: { label: "Phone number", type: "text", placeholder: "1231231231", required: true },
-                password: { label: "Password", type: "password", required: true }
+                phone: { type: "text" },
+                password: { type: "password" }
             },
             async authorize(credentials: CredentialsType | undefined) {
 
@@ -32,7 +32,7 @@ export const authOptions = {
                 const parsedCredentials = userSigninSchema.safeParse(loginCredentials);
 
                 if(!parsedCredentials.success){
-                    return null;
+                    throw new Error("Invalid inputs");
                 }
               
                 try {
@@ -41,24 +41,29 @@ export const authOptions = {
                             phone: credentials.phone
                         }
                     });
-                    
-                    if (existingUser) {
-                        const passwordValidation = await bcrypt.compare(credentials.password, existingUser.password);
-                        if (passwordValidation) {
-                            return {
-                                id: existingUser.id.toString(),
-                                name: existingUser.name,
-                                phone: existingUser.phone,
-                                email: existingUser.email
-                            }
-                        }
-                        return null;
+
+                    if(!existingUser){
+                        throw new Error("Incorrect username or password");
                     }
                     
-                } catch(e) {
-                    console.error(e);
+                    const passwordValidation = await bcrypt.compare(credentials.password, existingUser.password);
+
+                    if(!passwordValidation){
+                        throw new Error("Incorrect password");
+                    }
+
+                    return{
+                        id: existingUser.id.toString(),
+                        name: existingUser.name,
+                        phone: existingUser.phone,
+                        email: existingUser.email
+                    }
                 }
-                return null
+                    
+                catch(error:any) {
+                    console.error(error);
+                    throw new Error(error.message || "Login failed please try again later.....")
+                }
             },
         }),
     ],
@@ -87,5 +92,5 @@ export const authOptions = {
         signIn: "/signin",
         error: "/signin"
     }
-  }
+}
   
