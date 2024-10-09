@@ -30,6 +30,13 @@ export default function(){
     }
     return (
         <div className="bg-slate-300 h-screen flex justify-center">
+            {error && (
+                <div className="bg-red-500 w-80 py-7 text-white rounded-lg text-center overflow-auto px-2">
+                    <div>
+                        {error}
+                    </div>
+                </div>
+            )}
             <div className="flex flex-col justify-center">
                 <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
                     <h1 className="text-4xl font-bold mb-1">Sign in</h1>
